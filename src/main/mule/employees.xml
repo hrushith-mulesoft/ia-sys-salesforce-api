@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<os:object-store name="employees_os" doc:name="Object store" doc:id="c26c6e2c-c499-4b1e-b2ed-d82847501448" maxEntries="1000" entryTtl="5" entryTtlUnit="HOURS"/>
+	<os:object-store name="employees_data" doc:name="Object store" doc:id="6b6757b7-0b7c-44e7-9cca-e4c3fced3781" maxEntries="1000" entryTtl="5" entryTtlUnit="HOURS"/>
+	<flow name="retrieve-employees" doc:id="8fba6fbe-21f6-44fa-8480-ccd87bbaa9e2" >
+		<ee:transform doc:name="Set Variables" doc:id="d46a38c4-97d9-4e4d-922f-85233f7de9de" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="result" ><![CDATA[%dw 2.0
+output application/json
+---
+[
+	
+]]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<os:retrieve-all-keys doc:name="Retrieve all keys" doc:id="2750f42e-71fb-45f4-a77e-71e379519487" objectStore="employees_os"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c2ef281a-fb7e-4f89-8b7a-78ec2146b02d" message="#[payload]"/>
+		<foreach doc:name="For Each" doc:id="e189c239-2c22-45b1-905e-78a64de791d2" collection="#[payload]" >
+			<os:retrieve doc:id="20df2824-e95a-4751-8c0d-1eb34971b93d" key="#[payload]" objectStore="employees_os" target="retrievedValue" doc:name="Retrieve" />
+			<logger level="INFO" doc:name="Logger" doc:id="4c3f70fa-1ce4-4416-8203-2fd8b82d9b18" message="#[payload]"/>
+			<ee:transform doc:name="ransform Message" doc:id="304c4e2a-c9df-4999-b3b1-bd5447d5a8bc" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="result" ><![CDATA[%dw 2.0
+output application/json
+---
+vars.result << vars.retrievedValue]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</foreach>
+		<ee:transform doc:name="Transform Message" doc:id="fc78d2fe-3676-4e92-9d31-47d3e77edae3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.result]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="add-employees" doc:id="fc8bd8ae-f921-4a23-8ecf-f0938014341b" >
+		<foreach doc:name="For Each" doc:id="4f5b2473-4145-4660-8b88-53a4fadee95f" collection="#[payload]">
+			<logger level="INFO" doc:name="Logger" doc:id="ac03fda9-7c60-4a34-8679-511fb1a358b6" message="#[payload]" />
+		</foreach>
+		<foreach doc:name="For Each" doc:id="87690dba-e2ce-4935-abf5-da9ad3729ef5" collection="#[payload]" >
+			<os:store doc:name="Store" doc:id="547c923b-50f7-43a4-85fe-93fb2f7ff550" key="#[payload.first_name]" objectStore="employees_os" />
+			<ee:transform doc:name="Transform Message" doc:id="7526783b-1438-4731-bf1f-c209f1d84f56" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.first_name]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</foreach>
+	</flow>
+	<flow name="delete-employees" doc:id="d739198f-887c-4ee2-a4ad-d06ff0f6b971" >
+		<os:clear doc:name="Clear" doc:id="8a765198-964d-45c3-ad1b-a844c964f6ad" objectStore="employees_os" />
+	</flow>
+</mule>
