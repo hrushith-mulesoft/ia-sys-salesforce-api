@@ -27,11 +27,9 @@ output application/json
 			</ee:variables>
 		</ee:transform>
 		<os:retrieve-all-keys doc:name="Retrieve all keys" doc:id="2750f42e-71fb-45f4-a77e-71e379519487" objectStore="employees_os"/>
-		<logger level="INFO" doc:name="Logger" doc:id="c2ef281a-fb7e-4f89-8b7a-78ec2146b02d" message="#[payload]"/>
 		<foreach doc:name="For Each" doc:id="e189c239-2c22-45b1-905e-78a64de791d2" collection="#[payload]" >
 			<os:retrieve doc:id="20df2824-e95a-4751-8c0d-1eb34971b93d" key="#[payload]" objectStore="employees_os" target="retrievedValue" doc:name="Retrieve" />
-			<logger level="INFO" doc:name="Logger" doc:id="4c3f70fa-1ce4-4416-8203-2fd8b82d9b18" message="#[payload]"/>
-			<ee:transform doc:name="ransform Message" doc:id="304c4e2a-c9df-4999-b3b1-bd5447d5a8bc" >
+			<ee:transform doc:name="Append Data" doc:id="304c4e2a-c9df-4999-b3b1-bd5447d5a8bc" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -57,12 +55,17 @@ vars.result]]></ee:set-payload>
 		</ee:transform>
 	</flow>
 	<flow name="add-employees" doc:id="fc8bd8ae-f921-4a23-8ecf-f0938014341b" >
-		<foreach doc:name="For Each" doc:id="4f5b2473-4145-4660-8b88-53a4fadee95f" collection="#[payload]">
-			<logger level="INFO" doc:name="Logger" doc:id="ac03fda9-7c60-4a34-8679-511fb1a358b6" message="#[payload]" />
-		</foreach>
-		<foreach doc:name="For Each" doc:id="87690dba-e2ce-4935-abf5-da9ad3729ef5" collection="#[payload]" >
-			<os:store doc:name="Store" doc:id="547c923b-50f7-43a4-85fe-93fb2f7ff550" key="#[payload.first_name]" objectStore="employees_os" />
-			<ee:transform doc:name="Transform Message" doc:id="7526783b-1438-4731-bf1f-c209f1d84f56" >
+		<ee:transform doc:name="Transform Message" doc:id="7c31df48-ccc8-4b54-913f-e65365570944" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="7ee6d4e6-1574-4dcd-a3a7-588821a03bf4" collection="#[payload]">
+			<os:store doc:name="Store" doc:id="f2a2a51f-a7d6-446d-bb34-30ac80ea2305" key="#[payload.first_name]" objectStore="employees_os"/>
+			<ee:transform doc:name="Transform Message" doc:id="da8f2866-6f1b-4db3-9d33-a627629d0207" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
 output application/json

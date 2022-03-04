@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
     <apikit:config name="ia-sys-salesforce-api-config" api="resource::f63a4349-ce64-4db1-9509-c9fb8504dc3b:ia-sys-salesforce-api:1.0.0:raml:zip:ia-sys-salesforce-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" >
-		<apikit:flow-mappings >
-			<apikit:flow-mapping resource="/employees" action="get" flow-ref="get:\employees:ia-sys-salesforce-api-config" />
-			<apikit:flow-mapping resource="/employees" action="post" flow-ref="post:\employees:ia-sys-salesforce-api-config" />
-			<apikit:flow-mapping resource="/employees" action="delete" flow-ref="delete:\employees:ia-sys-salesforce-api-config" />
-			<apikit:flow-mapping resource="/contractors" action="get" flow-ref="get:\contractors:ia-sys-salesforce-api-config" />
-			<apikit:flow-mapping resource="/contractors" action="post" flow-ref="post:\contractors:ia-sys-salesforce-api-config" />
-			<apikit:flow-mapping resource="/contractors" action="delete" flow-ref="delete:\contractors:ia-sys-salesforce-api-config" />
-			<apikit:flow-mapping resource="/officeLocations" action="get" flow-ref="get:\officeLocations:ia-sys-salesforce-api-config" />
-		</apikit:flow-mappings>
 	</apikit:config>
     <flow name="ia-sys-salesforce-api-main">
         <http:listener path="/api/*" config-ref="ia-sys-salesforce-api-httpListenerConfig">
