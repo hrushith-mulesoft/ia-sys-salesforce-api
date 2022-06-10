@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<os:object-store name="employees_os" doc:name="Object store" doc:id="c26c6e2c-c499-4b1e-b2ed-d82847501448" maxEntries="1000" entryTtl="5" entryTtlUnit="HOURS"/>
 	<os:object-store name="employees_data" doc:name="Object store" doc:id="6b6757b7-0b7c-44e7-9cca-e4c3fced3781" maxEntries="1000" entryTtl="5" entryTtlUnit="HOURS"/>
 	<flow name="retrieve-employees" doc:id="8fba6fbe-21f6-44fa-8480-ccd87bbaa9e2" >
@@ -54,7 +55,7 @@ vars.result]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
-	<flow name="add-employees" doc:id="fc8bd8ae-f921-4a23-8ecf-f0938014341b" >
+	<flow name="add-employees-os" doc:id="fc8bd8ae-f921-4a23-8ecf-f0938014341b" >
 		<ee:transform doc:name="Transform Message" doc:id="7c31df48-ccc8-4b54-913f-e65365570944" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -68,6 +69,36 @@ payload]]></ee:set-payload>
 			<ee:transform doc:name="Transform Message" doc:id="da8f2866-6f1b-4db3-9d33-a627629d0207" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.first_name]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</foreach>
+	</flow>
+	<flow name="add-employees" doc:id="c826d618-8285-45c6-a80a-598bad2ceb63">
+		<ee:transform doc:name="Transform Message" doc:id="e8f4d991-64eb-4eb6-af63-01586a9f4373">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="f12fd9b1-c4ea-4a6a-a504-07fbd2717b8f" collection="#[payload]">
+			<ee:transform doc:name="Transform Message" doc:id="02f38064-34d9-438a-ba53-728baabe4836">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<salesforce:create doc:name="Create" doc:id="8f5138d0-e255-404b-9a4d-23c7306a8d40" config-ref="Salesforce_Config"/>
+			<ee:transform doc:name="Transform Message" doc:id="69ccaa85-87d6-4048-a603-c2756ae8b9b4">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 payload.first_name]]></ee:set-payload>

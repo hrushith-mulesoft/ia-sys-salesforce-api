@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<http:listener-config name="ia-sys-salesforce-api-httpListenerConfig" doc:name="HTTP Listener config" doc:id="69ab66fa-4ff8-4e85-8696-96e368407216" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
-	<api-gateway:autodiscovery apiId="17655101" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="8f4965d7-e1d8-4125-a6d8-352b851159d6" flowRef="ia-sys-salesforce-api-main" />
+	<api-gateway:autodiscovery apiId="17894181" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="8f4965d7-e1d8-4125-a6d8-352b851159d6" flowRef="ia-sys-salesforce-api-main" />
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="7a623751-362d-4678-be1f-4f7221f2d40f" >
+		<salesforce:basic-connection username="hrushith@ea.com" password="Mulesoft96521Zo0rSPUGkyndROf6Zpr6Nm46I" securityToken="Zo0rSPUGkyndROf6Zpr6Nm46I" url="https://kiotinnovations-dev-ed.my.salesforce.com/services/Soap/u/" />
+	</salesforce:sfdc-config>
 </mule>
