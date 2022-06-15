@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="ia-sys-salesforce-api-config" api="resource::f1af8f1a-f6fb-4a4a-9d89-c95224fc9a1b:ia-sys-salesforce-api:1.0.0:raml:zip:ia-sys-salesforce-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <apikit:config name="ia-sys-salesforce-api-config" api="resource::f1af8f1a-f6fb-4a4a-9d89-c95224fc9a1b:ia-sys-salesforce-api:1.0.4:raml:zip:ia-sys-salesforce-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="ia-sys-salesforce-api-main">
         <http:listener config-ref="ia-sys-salesforce-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -133,7 +133,7 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="delete:\employees:ia-sys-salesforce-api-config">
-		<flow-ref doc:name="Flow Reference" doc:id="738dcb7d-e6a5-49f5-9c1e-9fd40d8f7a62" name="delete-employees"/>
+        <flow-ref doc:name="Flow Reference" doc:id="738dcb7d-e6a5-49f5-9c1e-9fd40d8f7a62" name="delete-employees" />
     </flow>
     <flow name="get:\contractors:ia-sys-salesforce-api-config">
         <ee:transform>
@@ -157,7 +157,7 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="get:\employees:ia-sys-salesforce-api-config">
-		<flow-ref doc:name="Flow Reference" doc:id="24d85216-54cc-4b2e-9e6b-bdb2e6a3af01" name="retrieve-employees"/>
+        <flow-ref doc:name="Flow Reference" doc:id="24d85216-54cc-4b2e-9e6b-bdb2e6a3af01" name="retrieve-employees" />
     </flow>
     <flow name="get:\officeLocations:ia-sys-salesforce-api-config">
         <ee:transform>
@@ -173,6 +173,25 @@ output application/json
         <logger level="INFO" message="post:\contractors:ia-sys-salesforce-api-config" />
     </flow>
     <flow name="post:\employees:ia-sys-salesforce-api-config">
-		<flow-ref doc:name="add-employees" doc:id="0057c945-fcf1-4115-adfd-3673f44a3817" name="add-employees"/>
+        <flow-ref doc:name="add-employees" doc:id="0057c945-fcf1-4115-adfd-3673f44a3817" name="add-employees" />
+    </flow>
+    <flow name="get:\profileID:ia-sys-salesforce-api-config">
+        <logger level="INFO" message="get:\profileID:ia-sys-salesforce-api-config" />
+        <flow-ref doc:name="Flow Reference" doc:id="2b64952c-aa45-443d-9563-4aa0682c2946" name="getProfileID" />
+    </flow>
+    <flow name="get:\userID:ia-sys-salesforce-api-config">
+        <logger level="INFO" message="get:\userID:ia-sys-salesforce-api-config" />
+        <flow-ref doc:name="Flow Reference" doc:id="13172782-dbfd-491b-9068-46dc6ac1b8ee" name="getUserID" />
+    </flow>
+    <flow name="post:\createUsers:ia-sys-salesforce-api-config">
+        <flow-ref doc:name="Flow Reference" doc:id="7584c1bf-ff5f-4db6-bbc6-7830c5ecd406" name="createUsers" />
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
 </mule>

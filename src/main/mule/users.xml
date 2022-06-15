@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getProfileID" doc:id="35e938b4-678d-46df-bfc0-3d84733a6f3b" >
+		<ee:transform doc:name="Transform Message" doc:id="a287ddc1-02a9-4026-9881-49c8edf8b677" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"profileName" : attributes.queryParams.profileName]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="7c714efe-167b-4a9a-9c1e-e45934728e05" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id, Name FROM Profile WHERE Name = ':profileName' LIMIT 100]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	"profileName" : payload.profileName
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="bc1f2093-0884-4cab-8ee8-e47344f95afe" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    ProfileID: payload[0].Id,
+    ProfileName: payload[0].Name
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getUserID" doc:id="a4e87df6-1125-47d7-b600-fce68acedc91" >
+		<ee:transform doc:name="Transform Message" doc:id="e897a327-ecc6-47a9-9147-ccd1c8a16f83" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"employeeNumber" : attributes.queryParams.employeeNumber]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="4f948cc7-20f6-435c-bfe4-c8a478cc2419" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id, Name FROM USER WHERE EmployeeNumber = ':employeeNumber' LIMIT 100]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	"employeeNumber" : payload.employeeNumber
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="ac70581a-84e6-45e0-b281-26e9586a9c3b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    UserID: payload[0].Id,
+    UserName: payload[0].Name
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="createUsers" doc:id="a66ae7cc-e4b0-40b7-967d-491a291f2a79" >
+		<ee:transform doc:name="Transform Message" doc:id="d1fb3bef-ddd0-4d4a-a1e2-15cd1aad90fd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    Response: "Salesforce User Created",
+    UserName: payload.UserName,
+    EmployeeID: payload.EmployeeID
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

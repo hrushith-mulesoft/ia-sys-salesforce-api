@@ -9,6 +9,11 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<os:object-store name="employees_os" doc:name="Object store" doc:id="c26c6e2c-c499-4b1e-b2ed-d82847501448" maxEntries="1000" entryTtl="5" entryTtlUnit="HOURS"/>
 	<os:object-store name="employees_data" doc:name="Object store" doc:id="6b6757b7-0b7c-44e7-9cca-e4c3fced3781" maxEntries="1000" entryTtl="5" entryTtlUnit="HOURS"/>
+	<flow name="retrieve-profileId" doc:id="011a05f7-d63c-4a28-ae9c-a5f7d82126e9" >
+		<salesforce:query doc:name="Query" doc:id="4a9f0baa-e853-4999-bf7e-692736568d2a" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id, Name FROM Profile WHERE Name = 'Marketing User' LIMIT 100]]></salesforce:salesforce-query>
+		</salesforce:query>
+	</flow>
 	<flow name="retrieve-employees" doc:id="8fba6fbe-21f6-44fa-8480-ccd87bbaa9e2" >
 		<ee:transform doc:name="Set Variables" doc:id="d46a38c4-97d9-4e4d-922f-85233f7de9de" >
 			<ee:message >
@@ -82,7 +87,9 @@ payload.first_name]]></ee:set-payload>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+{
+	
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<foreach doc:name="For Each" doc:id="f12fd9b1-c4ea-4a6a-a504-07fbd2717b8f" collection="#[payload]">
@@ -95,7 +102,6 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<salesforce:create doc:name="Create" doc:id="8f5138d0-e255-404b-9a4d-23c7306a8d40" config-ref="Salesforce_Config"/>
 			<ee:transform doc:name="Transform Message" doc:id="69ccaa85-87d6-4048-a603-c2756ae8b9b4">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
