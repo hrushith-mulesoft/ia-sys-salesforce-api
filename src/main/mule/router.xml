@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="ia-sys-salesforce-api-config" api="resource::f1af8f1a-f6fb-4a4a-9d89-c95224fc9a1b:ia-sys-salesforce-api:1.0.4:raml:zip:ia-sys-salesforce-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="ia-sys-salesforce-api-config" api="resource::f1af8f1a-f6fb-4a4a-9d89-c95224fc9a1b:ia-sys-salesforce-api:1.0.5:raml:zip:ia-sys-salesforce-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="ia-sys-salesforce-api-main">
         <http:listener config-ref="ia-sys-salesforce-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -191,6 +191,20 @@ output application/json
 output application/json
 ---
 payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="post:\createUsers:application\json:ia-sys-salesforce-api-config">
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  Response: "Salesforce User Created",
+  UserName: "cpine@kiot.com",
+  EmployeeID: "999173"
+}]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
