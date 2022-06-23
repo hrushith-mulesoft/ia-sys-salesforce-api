@@ -44,7 +44,7 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<salesforce:query doc:name="Query" doc:id="4f948cc7-20f6-435c-bfe4-c8a478cc2419" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id, Name FROM USER WHERE EmployeeNumber = ':employeeNumber' LIMIT 100]]></salesforce:salesforce-query>
+			<salesforce:salesforce-query ><![CDATA[SELECT Name, ID FROM USER WHERE EmployeeNumber = ':employeeNumber' LIMIT 100]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
@@ -64,17 +64,69 @@ output application/json
 		</ee:transform>
 	</flow>
 	<flow name="createUsers" doc:id="a66ae7cc-e4b0-40b7-967d-491a291f2a79" >
+		<ee:transform doc:name="Transform Message" doc:id="2c23c85c-57db-4c81-9ffa-720e150e5806" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<ee:transform doc:name="Transform Message" doc:id="7b3a066e-489c-4190-aa03-125776068e45" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-{
-    Response: "Salesforce User Created",
-    UserName: payload.UserName,
-    EmployeeID: payload.EmployeeID
+[
+	{
+	"Name__c": payload[0].FirstName ++ " " ++ payload[0].LastName,
+	"FirstName": payload[0].FirstName,
+	"LastName": payload[0].LastName,
+	"Alias": payload[0].Alias,
+	"CommunityNickname": payload[0].FirstName,
+	"Email": payload[0].WorkEmail,
+	"Username": payload[0].UserName,
+	"TimeZoneSidKey": payload[0].TimeZonesIdKey as Enum,
+	"LocaleSidKey": payload[0].LocalesIdkey as Enum,
+	"EmailEncodingKey": payload[0].EmailEncodingkey as Enum,
+	"LanguageLocaleKey": payload[0].LanguageLocalekey as Enum,
+	"Address__c": payload[0].WMPOffice,
+	"EmployeeNumber": payload[0].EmployeeID,
+	"ProfileId": payload[0].ProfileID
 }
-]]></ee:set-payload>
+]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create doc:name="Create" doc:id="9d9f4bdc-38dc-4cb4-bbc4-97b5be3b133e" config-ref="Salesforce_Config" type="User"/>
+		<ee:transform doc:name="Transform Message" doc:id="39c37744-d99f-481d-b864-ed6aa2e98796" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="deleteUsers" doc:id="7470933c-ea50-449c-bf4e-e34c82bb4d64" >
+		<ee:transform doc:name="Transform Message" doc:id="e402a84c-fe88-4017-94ce-4caf2bb07807" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[
+	"UserID": attributes.queryParams.userID
+]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:delete doc:name="Delete" doc:id="35dc30e0-1eff-4850-8cf4-84c8367c50f5" config-ref="Salesforce_Config">
+			<salesforce:ids ><![CDATA[#[payload.UserID]]]></salesforce:ids>
+		</salesforce:delete>
+		<ee:transform doc:name="Transform Message" doc:id="1f4da122-0e77-42dd-bf38-8d8c7fec59ae" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>

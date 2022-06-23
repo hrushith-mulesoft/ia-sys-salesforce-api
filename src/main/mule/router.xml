@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="ia-sys-salesforce-api-config" api="resource::f1af8f1a-f6fb-4a4a-9d89-c95224fc9a1b:ia-sys-salesforce-api:1.0.5:raml:zip:ia-sys-salesforce-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="ia-sys-salesforce-api-config" api="resource::f1af8f1a-f6fb-4a4a-9d89-c95224fc9a1b:ia-sys-salesforce-api:1.0.7:raml:zip:ia-sys-salesforce-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="ia-sys-salesforce-api-main">
         <http:listener config-ref="ia-sys-salesforce-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -184,17 +184,14 @@ output application/json
         <flow-ref doc:name="Flow Reference" doc:id="13172782-dbfd-491b-9068-46dc6ac1b8ee" name="getUserID" />
     </flow>
     <flow name="post:\createUsers:ia-sys-salesforce-api-config">
-        <flow-ref doc:name="Flow Reference" doc:id="7584c1bf-ff5f-4db6-bbc6-7830c5ecd406" name="createUsers" />
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload.Name]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-    </flow>
-    <flow name="post:\createUsers:application\json:ia-sys-salesforce-api-config">
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -202,10 +199,14 @@ output application/json
 ---
 {
   Response: "Salesforce User Created",
-  UserName: "cpine@kiot.com",
-  EmployeeID: "999173"
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
+    </flow>
+    <flow name="post:\createUsers:application\json:ia-sys-salesforce-api-config">
+        <flow-ref doc:name="Flow Reference" doc:id="7584c1bf-ff5f-4db6-bbc6-7830c5ecd406" name="createUsers" />
+    </flow>
+    <flow name="delete:\deleteUsers:ia-sys-salesforce-api-config">
+		<flow-ref doc:name="Flow Reference" doc:id="d1caaba6-19ee-4eca-a238-ad189abeb0f2" name="deleteUsers"/>
     </flow>
 </mule>

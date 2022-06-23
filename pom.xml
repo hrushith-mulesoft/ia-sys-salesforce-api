@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>f1af8f1a-f6fb-4a4a-9d89-c95224fc9a1b</groupId>
 			<artifactId>ia-sys-salesforce-api</artifactId>
-			<version>1.0.5</version>
+			<version>1.0.7</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>
